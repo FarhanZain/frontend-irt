@@ -93,16 +93,36 @@ export default function RuangUjianAktif() {
   };
 
   // PERBAIKAN: Kumpulkan semua jawaban dari state dan kirim sekaligus
+  // PERBAIKAN: Blokir submit jika masih ada soal yang belum diisi
   const handleFinalSubmitUjian = async () => {
-    const belumDiisi = listSoalUjian.filter(s => s.jawaban_terpilih_id === null).length;
-    const confirmText = belumDiisi > 0 
-        ? `Perhatian! Masih ada ${belumDiisi} soal kosong yang belum dijawab. Tetap submit hasil?`
-        : "Apakah Anda yakin ingin mengakhiri ujian dan mengirim semua lembar jawaban?";
+    const belumDiisiIndex = listSoalUjian.findIndex(s => s.jawaban_terpilih_id === null);
+    const totalBelumDiisi = listSoalUjian.filter(s => s.jawaban_terpilih_id === null).length;
 
+    // Jika ada soal yang belum dijawab, hentikan proses dan tampilkan peringatan
+    if (totalBelumDiisi > 0) {
+      const result = await Swal.fire({
+        icon: "warning",
+        title: "Soal Belum Lengkap",
+        text: `Masih ada ${totalBelumDiisi} soal yang belum Anda jawab. Silakan lengkapi semua jawaban sebelum submit.`,
+        confirmButtonColor: "#3B82F6",
+        confirmButtonText: "Buka Soal Kosong",
+        showCancelButton: true,
+        cancelButtonText: "Tutup",
+        cancelButtonColor: "#6B7280"
+      });
+
+      // Pindahkan tampilan langsung ke nomor soal pertama yang belum diisi
+      if (result.isConfirmed && belumDiisiIndex !== -1) {
+        setCurrentIndex(belumDiisiIndex);
+      }
+      return;
+    }
+
+    // Jika semua soal sudah terisi, baru tampilkan konfirmasi kirim
     const confirm = await Swal.fire({
         title: "Selesaikan Sesi Ujian?",
-        text: confirmText,
-        icon: "warning",
+        text: "Apakah Anda yakin ingin mengakhiri ujian dan mengirim semua lembar jawaban?",
+        icon: "question",
         showCancelButton: true,
         confirmButtonColor: "#10B981",
         cancelButtonColor: "#6B7280",
@@ -169,7 +189,7 @@ export default function RuangUjianAktif() {
     } finally {
         setIsSubmittingUjian(false);
     }
-    };
+  };
 
   if (loading) {
     return <div className="p-8 text-center text-gray-500 font-semibold animate-pulse">Menyusun Lembar Soal Ujian...</div>;

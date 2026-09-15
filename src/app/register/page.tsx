@@ -6,7 +6,7 @@ import Link from "next/link";
 
 export default function RegisterPage() {
   const [nama, setNama] = useState("");
-  const [password, setPassword] = useState("123456");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -65,7 +65,7 @@ export default function RegisterPage() {
           />
         </div>
 
-        {/* <div className="mb-5.5">
+        <div className="mb-5.5">
           <label className="mb-2.5 block text-black dark:text-white">Password</label>
           <input
             type="password"
@@ -75,7 +75,7 @@ export default function RegisterPage() {
             className="w-full rounded-xl border-[1.5px] border-stroke bg-transparent py-3 px-4 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white"
             required
           />
-        </div> */}
+        </div>
 
         <button type="submit" disabled={isSubmitting} className="flex w-full justify-center rounded-xl bg-blue-500 p-3 font-medium text-white hover:bg-blue-600 disabled:bg-blue-400 disabled:cursor-not-allowed">
           {isSubmitting ? "Memproses..." : "Daftar"}
