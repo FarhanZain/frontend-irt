@@ -74,7 +74,7 @@ export default function DetailPengembangPaketSoal() {
         setAnalyzing(true);
         try {
             // Tembak ke endpoint Python FastAPI yang telah kita buat
-            const res = await fetch(`${process.env.NEXT_IRT_API_URL}/analisis-irt/${params.id}`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_IRT_URL}/analisis-irt/${params.id}`, {
                 method: "POST",
                 headers: {
                     "Authorization": `Bearer ${token}`,
