@@ -337,6 +337,7 @@ export default function BankSoalPage() {
                 <tr className="bg-gray-100 dark:bg-gray-800 text-left">
                   <th className="p-3 font-medium text-black dark:text-white">Nama Paket Soal</th>
                   <th className="p-3 font-medium text-black dark:text-white">Tipe</th>
+                  <th className="p-3 font-medium text-black dark:text-white">Jadwal Selesai</th>
                   <th className="p-3 font-medium text-black dark:text-white text-center">Aksi</th>
                 </tr>
               </thead>
@@ -349,6 +350,17 @@ export default function BankSoalPage() {
                   <tr key={pkt.id_paket} className="border-b border-stroke hover:bg-gray-50/50">
                     <td className="p-3 font-medium text-black dark:text-white">{pkt.nama_paket}</td>
                     <td className="p-3"><span className="px-2.5 py-1 text-xs rounded-full bg-blue-100 text-blue-700 font-bold uppercase">{pkt.tipe_soal}</span></td>
+                    <td className="p-3">
+                        <span className="px-2.5 py-1 text-sm font-semibold text-black">
+                          {new Date(pkt.jadwal_selesai).toLocaleString("id-ID", {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })} WIB
+                        </span>
+                    </td>
                     <td className="p-3 text-center">
                       <div className="flex items-center justify-center space-x-2">
                         <button onClick={() => handleActionDetailPaket(pkt)} className="py-1.5 px-3 rounded-lg bg-emerald-500 text-white text-xs font-semibold">Detail / Topik</button>

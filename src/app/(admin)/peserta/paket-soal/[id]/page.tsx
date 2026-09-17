@@ -9,6 +9,7 @@ interface DetailPaketState {
         id_paket: number;
         nama_paket: string;
         tipe_soal: string;
+        jadwal_selesai?: string | null;
         topik: Array<{ id_topik: number; nama_topik: string; soal_count: number }>;
     };
     jumlah_topik: number;
@@ -105,6 +106,21 @@ export default function DetailDeskripsiPraUjian() {
         return <div className="p-8 text-center text-red-500">Gagal mengambil informasi dokumen paket soal.</div>;
     }
 
+    // 1. Cek apakah jadwal_selesai sudah melewati waktu saat ini (kadaluarsa)
+    const isExpired = detailPaket.paket.jadwal_selesai 
+        ? new Date(detailPaket.paket.jadwal_selesai) < new Date() 
+        : false;
+
+    // 2. Tentukan teks tombol nonaktif
+    let disabledButtonText = "";
+    if (isExpired) {
+        disabledButtonText = "Sesi Ujian Telah Ditutup";
+    } else if (detailPaket.status_pengerjaan === "sudah_selesai") {
+        disabledButtonText = "Sesi Ujian Telah Selesai";
+    } else if (detailPaket.jumlah_topik === 0 || detailPaket.jumlah_soal_keseluruhan === 0) {
+        disabledButtonText = "Paket Soal Belum Lengkap";
+    }
+
     return (
         <div className="w-full p-2 max-w-6xl mx-auto">
             <Tombol path={`/peserta/paket-soal`} text="← Kembali" />
@@ -113,6 +129,20 @@ export default function DetailDeskripsiPraUjian() {
                 <div className="border-b pb-4">
                     <span className="text-xs font-bold uppercase text-blue-500 tracking-wider">Paket Soal</span>
                     <h2 className="text-xl font-bold text-black mt-1">{detailPaket.paket.nama_paket}</h2>
+
+                    {/* Tampilan Tanggal Selesai Ujian */}
+                    {detailPaket.paket.jadwal_selesai && (
+                        <p className="text-sm text-gray-500 mt-2 flex items-center gap-1 font-medium">
+                        <span className="font-semibold text-gray-600">Jadwal Selesai:</span>{" "}
+                        {new Date(detailPaket.paket.jadwal_selesai).toLocaleString("id-ID", {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                        })} WIB
+                        </p>
+                    )}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -143,9 +173,9 @@ export default function DetailDeskripsiPraUjian() {
                 </div>
 
                 <div className="pt-4 flex gap-4 justify-end">
-                    {detailPaket.status_pengerjaan === "sudah_selesai" || detailPaket.jumlah_topik === 0  || detailPaket.jumlah_soal_keseluruhan === 0 ? (
+                    {disabledButtonText !== "" ? (
                         <button disabled className="bg-gray-100 text-gray-500 font-semibold py-3 px-6 rounded-xl cursor-not-allowed text-sm">
-                        {detailPaket.status_pengerjaan === "sudah_selesai" ? "Sesi Ujian Telah Selesai" : "Paket Soal Belum Lengkap"}
+                        {disabledButtonText}
                         </button>
                     ) : (
                         <button

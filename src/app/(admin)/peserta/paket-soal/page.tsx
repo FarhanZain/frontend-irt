@@ -8,6 +8,7 @@ interface PaketPeserta {
   tipe_soal: string;
   topik_count: number;
   soal_count: number;
+  jadwal_selesai?: string | null;
   status_pengerjaan: "belum_mengerjakan" | "sedang_mengerjakan" | "sudah_selesai";
   id_ujian: number | null;
 }
@@ -75,32 +76,61 @@ export default function DaftarPaketSoalPeserta() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {daftarPaket.map((pkt) => (
-          <div key={pkt.id_paket} className="bg-white border border-gray-200 p-5 rounded-2xl flex flex-col justify-between hover:shadow-md transition">
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-bold uppercase px-2.5 py-1 rounded-full bg-blue-50 text-blue-600 border border-blue-100">{pkt.tipe_soal}</span>
-                {pkt.status_pengerjaan === "sudah_selesai" ? (
-                  <span className="text-xs font-semibold text-gray-500 bg-gray-50 px-2.5 py-1 rounded-lg">Sudah Dikerjakan</span>
-                )  : (
-                  <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg">Tersedia</span>
+        {daftarPaket.map((pkt) => {
+          // Pengecekan kadaluarsa / ujian ditutup
+          const isExpired = pkt.jadwal_selesai
+            ? new Date(pkt.jadwal_selesai) < new Date()
+            : false;
+
+          return (
+            <div key={pkt.id_paket} className="bg-white border border-gray-200 p-5 rounded-2xl flex flex-col justify-between hover:shadow-md transition">
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-bold uppercase px-2.5 py-1 rounded-full bg-blue-50 text-blue-600 border border-blue-100">{pkt.tipe_soal}</span>
+                  {/* Kondisi Status Ujian */}
+                  {isExpired ? (
+                    <span className="text-xs font-semibold text-red-600 bg-red-50 px-2.5 py-1 rounded-lg">
+                      Ujian Telah Ditutup
+                    </span>
+                  ) : pkt.status_pengerjaan === "sudah_selesai" ? (
+                    <span className="text-xs font-semibold text-gray-500 bg-gray-50 px-2.5 py-1 rounded-lg">
+                      Sudah Dikerjakan
+                    </span>
+                  ) : (
+                    <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg">
+                      Tersedia
+                    </span>
+                  )}
+                </div>
+                <h3 className="text-base font-bold text-black mb-2">{pkt.nama_paket}</h3>
+                <div className="text-sm text-gray-500 space-x-4 mb-4 mt-2">
+                  <span>📚 <b>{pkt.topik_count}</b> Topik</span>
+                  <span>📝 <b>{pkt.soal_count}</b> Butir Soal</span>
+                </div>
+
+                {/* Info Tanggal Selesai di Bawah Topik & Soal */}
+                {pkt.jadwal_selesai && (
+                  <div className="text-sm text-gray-500 mt-2 mb-4">
+                    <span><b>Jadwal Selesai:</b> {new Date(pkt.jadwal_selesai).toLocaleString("id-ID", {
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })} WIB</span>
+                  </div>
                 )}
               </div>
-              <h3 className="text-base font-bold text-black mb-2">{pkt.nama_paket}</h3>
-              <div className="text-sm text-gray-500 space-x-4 mb-4 mt-2">
-                <span>📚 <b>{pkt.topik_count}</b> Topik</span>
-                <span>📝 <b>{pkt.soal_count}</b> Butir Soal</span>
-              </div>
-            </div>
 
-            <button
-              onClick={() => router.push(`/peserta/paket-soal/${pkt.id_paket}`)}
-              className="w-full py-2 rounded-xl bg-blue-50 text-sm font-semibold hover:bg-blue-100 text-blue-600 text-center transition"
-            >
-              Lihat Detail →
-            </button>
-          </div>
-        ))}
+              <button
+                onClick={() => router.push(`/peserta/paket-soal/${pkt.id_paket}`)}
+                className="w-full py-2 rounded-xl bg-blue-50 text-sm font-semibold hover:bg-blue-100 text-blue-600 text-center transition"
+              >
+                Lihat Detail →
+              </button>
+            </div>
+          );
+    })}
       </div>
     </div>
   );
