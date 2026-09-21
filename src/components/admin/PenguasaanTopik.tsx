@@ -57,7 +57,9 @@ export const PenguasaanTopik: React.FC<TopikProps> = ({
     dataLabels: {
       enabled: true,
       formatter: function (val) {
-        const value = typeof val === "number" ? val : Array.isArray(val) ? val[0] : Number(val);
+        const rawValue = typeof val === "number" ? val : Array.isArray(val) ? val[0] : Number(val);
+        // Konversi ke angka & batasi maksimal 2 desimal di belakang koma
+        const value = parseFloat(Number(rawValue).toFixed(2));
         // Menampilkan persentase di dalam bar jika di atas 0%
         return value > 0 ? `${value}%` : "";
       },
