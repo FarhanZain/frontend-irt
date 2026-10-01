@@ -93,7 +93,7 @@ export const Topik: React.FC<TopikProps> = ({ topik, skor, total_soal, peluang, 
           <p className="font-bold text-lg text-blue-600 leading-tight">{skor}</p>
         </div>
         <div>
-          <p className="text-xs text-gray-700">Probabilitas Benar</p>
+          <p className="text-xs text-gray-700">Akurasi</p>
           <p className="font-bold text-lg text-blue-600 leading-tight text-end">{peluang}</p>
         </div>
       </div>

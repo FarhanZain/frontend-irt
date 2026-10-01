@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import MathText from "@/components/MathText";
 
 interface SoalDetail {
     id_soal: number;
@@ -95,7 +96,7 @@ export const Level = ({ data }: LevelProps) => {
                         </div>
 
                         {/* Konten Modal */}
-                        <div className="px-6 max-h-[70vh] overflow-y-auto">
+                        <div className="p-6 max-h-[70vh] overflow-y-auto">
                             {/* Status Jawaban & Tingkat Kesulitan */}
                             <div className="flex justify-between mb-4">
                                 <div>
@@ -131,7 +132,8 @@ export const Level = ({ data }: LevelProps) => {
                             <div>
                                 <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">Pertanyaan</label>
                                 <div className="text-sm text-gray-800 dark:text-gray-200 bg-gray-50 dark:bg-gray-800/30 p-3 rounded-xl border border-gray-100 dark:border-gray-800/50 leading-relaxed">
-                                    {selectedSoal.pertanyaan}
+                                    {/* {selectedSoal.pertanyaan} */}
+                                    <MathText text={selectedSoal.pertanyaan} />
                                 </div>
                             </div>
 
@@ -141,14 +143,16 @@ export const Level = ({ data }: LevelProps) => {
                                             selectedSoal.status_jawaban === 'salah' ? 'bg-red-50 border-red-200 text-red-500' : 'bg-gray-100 border-gray-200 text-gray-500'}`}>
                                     <label className="block text-xs font-semibold uppercase tracking-wider mb-1">Jawaban Anda</label>
                                     <p className={`text-sm font-medium ${selectedSoal.status_jawaban === 'kosong' ? 'text-gray-400 italic' : 'text-gray-900 dark:text-white'}`}>
-                                        {selectedSoal.jawaban_peserta ?? "Tidak menjawab"}
+                                        {/* {selectedSoal.jawaban_peserta ?? "Tidak menjawab"} */}
+                                        <MathText text={selectedSoal.jawaban_peserta ?? "Tidak menjawab"} />
                                     </p>
                                 </div>
 
                                 <div className="p-3 rounded-xl border border-green-200 dark:border-green-900/50 bg-green-50/30 dark:bg-green-950/10">
                                     <label className="block text-xs font-semibold uppercase tracking-wider text-green-600 dark:text-green-400 mb-1">Kunci Jawaban Benar</label>
                                     <p className="text-sm font-semibold text-gray-900 dark:text-green-400">
-                                        {selectedSoal.kunci_jawaban}
+                                        {/* {selectedSoal.kunci_jawaban} */}
+                                        <MathText text={selectedSoal.kunci_jawaban} />
                                     </p>
                                 </div>
                             </div>

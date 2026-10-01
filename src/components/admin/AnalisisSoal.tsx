@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useMemo } from "react";
+import MathText from "@/components/MathText";
 import {
     useReactTable,
     getCoreRowModel,
@@ -75,7 +76,15 @@ export const AnalisisSoal = ({ detailSoal }: AnalisisSoalTableProps) => {
             {
                 accessorKey: "pertanyaan_soal",
                 header: "Pertanyaan",
-                cell: (info) => <span className="text-gray-600 dark:text-gray-300">{info.getValue<string>()}</span>,
+                // cell: (info) => <span className="text-gray-600 dark:text-gray-300">{info.getValue<string>()}</span>,
+                cell: (info) => {
+                const value = info.getValue<string>();
+                    return (
+                        <span className="text-gray-600 dark:text-gray-300">
+                        <MathText text={value ?? ""} />
+                        </span>
+                    );
+                },
                 enableSorting: false,
             },
             {
