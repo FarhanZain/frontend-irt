@@ -28,6 +28,7 @@ interface Soal {
   id_soal: number;
   topik_id: number;
   pertanyaan: string;
+  pembahasan?: string | null;
   jawaban: Jawaban[];
 }
 
@@ -64,6 +65,7 @@ export default function BankSoalPage() {
   // FORM STATE SOAL (DITAMBAHKAN id_jawaban_soal UNTUK MODE UPDATE)
   const [idSoalEdit, setIdSoalEdit] = useState<number | null>(null);
   const [pertanyaan, setPertanyaan] = useState("");
+  const [pembahasan, setPembahasan] = useState("");
   const [pilihanJawaban, setPilihanJawaban] = useState([
     { id_jawaban_soal: 0, teks_jawaban: "" },
     { id_jawaban_soal: 0, teks_jawaban: "" },
@@ -219,6 +221,7 @@ export default function BankSoalPage() {
   const handleActionEditSoal = (sl: Soal) => {
     setIdSoalEdit(sl.id_soal);
     setPertanyaan(sl.pertanyaan);
+    setPembahasan(sl.pembahasan ?? "");
     
     // Petakan 4 pilihan jawaban lama beserta ID-nya masing-masing
     const mappedPilihan = sl.jawaban.map((jwb) => ({
@@ -243,9 +246,11 @@ export default function BankSoalPage() {
     const url = isEdit ? `${process.env.NEXT_PUBLIC_API_URL}/soal/${idSoalEdit}` : `${process.env.NEXT_PUBLIC_API_URL}/soal`;
     const method = isEdit ? "PUT" : "POST";
 
+    const pembahasanClean = pembahasan.trim() !== "" ? pembahasan : null;
+
     const payload = isEdit 
-      ? { pertanyaan, pilihan: pilihanJawaban, kunci_indeks: kunciIndeks }
-      : { topik_id: selectedTopik.id_topik, pertanyaan, pilihan: pilihanJawaban.map(p => ({ teks_jawaban: p.teks_jawaban })), kunci_indeks: kunciIndeks };
+      ? { pertanyaan, pembahasan: pembahasanClean, pilihan: pilihanJawaban, kunci_indeks: kunciIndeks }
+      : { topik_id: selectedTopik.id_topik, pertanyaan, pembahasan: pembahasanClean, pilihan: pilihanJawaban.map(p => ({ teks_jawaban: p.teks_jawaban })), kunci_indeks: kunciIndeks };
 
     try {
       const res = await fetch(url, {
@@ -317,7 +322,7 @@ export default function BankSoalPage() {
           onClick={() => {
             if (currentView === "paket") { setIdPaketEdit(null); setNamaPaket(""); setTipeSoal("utbk"); setJadwalMulai(""); setJadwalSelesai(""); }
             else if (currentView === "topik") { setIdTopikEdit(null); setNamaTopik(""); }
-            else if (currentView === "soal") { setIdSoalEdit(null); setPertanyaan(""); setKunciIndeks(0); setPilihanJawaban([{ id_jawaban_soal: 0, teks_jawaban: "" }, { id_jawaban_soal: 0, teks_jawaban: "" }, { id_jawaban_soal: 0, teks_jawaban: "" }, { id_jawaban_soal: 0, teks_jawaban: "" }]); }
+            else if (currentView === "soal") { setIdSoalEdit(null); setPertanyaan(""); setPembahasan(""); setKunciIndeks(0); setPilihanJawaban([{ id_jawaban_soal: 0, teks_jawaban: "" }, { id_jawaban_soal: 0, teks_jawaban: "" }, { id_jawaban_soal: 0, teks_jawaban: "" }, { id_jawaban_soal: 0, teks_jawaban: "" }]); }
             setIsModalOpen(true);
           }}
           className="rounded-xl bg-blue-500 py-2.5 px-5 text-sm font-semibold text-white hover:bg-blue-600"
@@ -459,6 +464,17 @@ export default function BankSoalPage() {
                   </div>
                 ))}
               </div>
+              {/* TAMPILAN PEMBAHASAN SOAL */}
+              {sl.pembahasan && (
+                <div className="mt-4 p-4 rounded-xl bg-blue-50/70 border border-blue-200 dark:bg-blue-950/30 dark:border-blue-800">
+                  <p className="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400 mb-1">
+                    Pembahasan:
+                  </p>
+                  <div className="text-sm text-gray-700 dark:text-gray-200 whitespace-pre-wrap leading-relaxed">
+                    <MathText text={sl.pembahasan} />
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -487,10 +503,8 @@ export default function BankSoalPage() {
                     <label className="mb-2 block text-sm font-semibold">Tipe Tingkatan Soal</label>
                     <select value={tipeSoal} onChange={(e) => setTipeSoal(e.target.value)} className="w-full rounded-xl border py-2.5 px-4">
                       <option value="utbk">UTBK</option>
-                      <option value="sd">Sekolah Dasar (SD)</option>
-                      <option value="smp">Sekolah Menengah Pertama (SMP)</option>
-                      <option value="sma">Sekolah Menengah Atas (SMA)</option>
-                      <option value="umum">Umum</option>
+                      <option value="tka">TKA</option>
+                      <option value="umum">UMUM</option>
                     </select>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -532,6 +546,18 @@ export default function BankSoalPage() {
                         </div>
                       ))}
                     </div>
+                  </div>
+                  <div className="border-t border-gray-100 pt-3">
+                    <label className="mb-1.5 block text-sm font-semibold text-black dark:text-white">
+                      Pembahasan Soal <span className="text-xs font-normal text-gray-400">(Opsional)</span>
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={pembahasan}
+                      onChange={(e) => setPembahasan(e.target.value)}
+                      placeholder="Tuliskan langkah penyelesaian atau penjelasan kunci jawaban (mendukung LaTeX)..."
+                      className="w-full rounded-xl border border-stroke bg-transparent py-2 px-3 text-sm"
+                    />
                   </div>
                 </div>
               )}

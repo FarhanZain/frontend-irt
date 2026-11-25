@@ -142,7 +142,7 @@ export default function DashboardHasilIRT() {
                     />
                     <Power 
                         kuat={initialData?.data?.kemampuan_per_sub_materi?.kekuatan || []} 
-                        normal={initialData?.data?.kemampuan_per_sub_materi?.normal || []} 
+                        sedang={initialData?.data?.kemampuan_per_sub_materi?.sedang || []} 
                         lemah={initialData?.data?.kemampuan_per_sub_materi?.kelemahan || []} 
                     />
                     <Level data={initialData?.data?.tingkat_kesulitan_soal || []}/>

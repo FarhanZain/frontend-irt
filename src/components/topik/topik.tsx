@@ -14,9 +14,10 @@ interface TopikProps {
   dataNilai: [number, number, number]; // [Benar, Salah, Kosong]
   borderColor: string;
   bgColor: string;
+  theta: number; 
 }
 
-export const Topik: React.FC<TopikProps> = ({ topik, skor, total_soal, peluang, dataNilai, borderColor, bgColor }) => {
+export const Topik: React.FC<TopikProps> = ({ topik, skor, total_soal, peluang, dataNilai, borderColor, bgColor, theta }) => {
   // Warna: Hijau (Benar), Merah (Salah), Abu-abu (Kosong)
   const colors = ["#a4f4cf", "#ffccd3", "#e2e8f0"];
   
@@ -87,14 +88,18 @@ export const Topik: React.FC<TopikProps> = ({ topik, skor, total_soal, peluang, 
       </div>
 
       {/* Bagian Footer: Detail Tambahan */}
-      <div className="flex justify-between items-center mt-3 border-t border-gray-50">
-        <div>
-          <p className="text-xs text-gray-700">Skor Kemampuan</p>
+      <div className="mt-3 border-t border-gray-50">
+        <div className="flex items-center justify-between gap-4 mt-2">
+          <p className="text-sm text-gray-700">Skor Akhir (Skala)</p>
           <p className="font-bold text-lg text-blue-600 leading-tight">{skor}</p>
         </div>
-        <div>
-          <p className="text-xs text-gray-700">Akurasi</p>
-          <p className="font-bold text-lg text-blue-600 leading-tight text-end">{peluang}</p>
+        <div className="flex items-center justify-between gap-4 mt-2">
+          <p className="text-sm text-gray-700">Estimasi Kemampuan (θ)</p>
+          <p className="font-bold text-lg text-blue-600 leading-tight">{theta}</p>
+        </div>
+        <div className="flex items-center justify-between gap-4 mt-2">
+          <p className="text-sm text-gray-700">Akurasi</p>
+          <p className="font-bold text-lg text-blue-600 leading-tight">{peluang}</p>
         </div>
       </div>
     </div>

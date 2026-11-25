@@ -8,6 +8,7 @@ import {
   ChevronDownIcon,
   DocsIcon,
   FileIcon,
+  FolderIcon,
   GridIcon,
   HorizontaLDots,
   TaskIcon,
@@ -37,7 +38,7 @@ const menuPerRole: Record<string, NavItem[]> = {
       path: "/pengembang/paket-soal",
     },
     {
-      icon: <DocsIcon />,
+      icon: <FolderIcon />,
       name: "Bank Soal",
       path: "/pengembang/bank-soal",
     },

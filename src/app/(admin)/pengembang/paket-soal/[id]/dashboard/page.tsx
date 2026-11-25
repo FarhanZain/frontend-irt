@@ -8,6 +8,7 @@ import { PenguasaanTopik } from "@/components/admin/PenguasaanTopik";
 import { PeringkatPesertaList } from "@/components/admin/PeringkatPeserta";
 import { Tombol } from "@/components/tombol/tombol";
 import KomposisiPieChart from "@/components/admin/KomposisiPieChart";
+import DayaPembedaChart from "@/components/admin/DayaPembedaChart";
 
 export default function DashboardHasilIrtPengembang() {
   const params = useParams();
@@ -81,6 +82,10 @@ export default function DashboardHasilIrtPengembang() {
     }
   };
 
+  // Cek apakah model IRT yang digunakan pada paket soal ini adalah 1PL
+  const modelIrt = detailPaket.analisis_soal?.detail?.[0]?.model_irt?.toUpperCase() || "";
+  const isModel1PL = modelIrt.includes("1PL");
+
   return (
     <div className="grid grid-cols-12 gap-4 md:gap-6 p-2">
       <div className="col-span-12">
@@ -119,13 +124,16 @@ export default function DashboardHasilIrtPengembang() {
 
         {/* Grafik Distribusi */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
-          <ChartDistribusi title="Distribusi Kemampuan Berdasarkan Nilai Theta" categories={detailPaket.categoriesTheta} data={detailPaket.valuesTheta} color="#3b82f6" />
-          <ChartDistribusi title="Distribusi Kemampuan Berdasarkan Nilai Skor" categories={detailPaket.categoriesSkor} data={detailPaket.valuesSkor} color="#10b981" />
+          <ChartDistribusi title="Distribusi Skor Kemampuan (Theta)" categories={detailPaket.categoriesTheta} data={detailPaket.valuesTheta} color="#3b82f6" />
+          <ChartDistribusi title="Distribusi Skor Kemampuan (Skala)" categories={detailPaket.categoriesSkor} data={detailPaket.valuesSkor} color="#10b981" />
         </div>
 
         {/* Penguasaan Topik */}
         <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] mt-4 dark:text-white/90">
           <h1 className="font-semibold text-base">Penguasaan Kategori per Topik</h1>
+          <p className="text-sm text-gray-600 dark:text-gray-300 my-4">
+                    Kategori <strong className="text-green-500">Kuat</strong>, <strong className="text-yellow-500">Sedang</strong>, dan <strong className="text-red-500">Lemah</strong> menunjukkan posisi tingkat kemampuan peserta dibandingkan dengan <strong className="text-blue-600">seluruh peserta lain</strong> yang mengerjakan paket soal ini pada topik yang sama.
+                </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
             {detailPaket.penguasaan_sub_materi?.map((item: any) => (
               <PenguasaanTopik
@@ -134,8 +142,8 @@ export default function DashboardHasilIrtPengembang() {
                 jumlah_peserta={item.jumlah_peserta}
                 jumlah_lemah={item.lemah.jumlah}
                 persen_lemah={item.lemah.persen}
-                jumlah_normal={item.normal.jumlah}
-                persen_normal={item.normal.persen}
+                jumlah_sedang={item.sedang.jumlah}
+                persen_sedang={item.sedang.persen}
                 jumlah_kuat={item.kuat.jumlah}
                 persen_kuat={item.kuat.persen}
               />
@@ -145,40 +153,15 @@ export default function DashboardHasilIrtPengembang() {
 
         {/* Analisis Karakteristik Soal */}
         <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] mt-4 dark:text-white/90">
-          <div>
-            <h1 className="font-semibold mb-3 text-base">Analisis Karakteristik Soal (Item Analysis)</h1>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <KomposisiPieChart
-                title="Distribusi Tingkat Kesulitan"
-                labels={["Mudah", "Sedang", "Susah"]}
-                series={[
-                  detailPaket.analisis_soal.kategori_kesulitan.mudah,
-                  detailPaket.analisis_soal.kategori_kesulitan.sedang,
-                  detailPaket.analisis_soal.kategori_kesulitan.susah,
-                ]}
-                colors={["#22c55e", "#eab308", "#ef4444"]}
-              />
-              <KomposisiPieChart
-                title="Distribusi Daya Pembeda"
-                labels={["Sangat Buruk", "Buruk", "Cukup", "Baik", "Sangat Baik"]}
-                series={[
-                  detailPaket.analisis_soal.kategori_daya_pembeda.sangat_buruk,
-                  detailPaket.analisis_soal.kategori_daya_pembeda.buruk,
-                  detailPaket.analisis_soal.kategori_daya_pembeda.cukup,
-                  detailPaket.analisis_soal.kategori_daya_pembeda.baik,
-                  detailPaket.analisis_soal.kategori_daya_pembeda.sangat_baik,
-                ]}
-                colors={["#ef4444", "#eab308", "#eab308", "#3b82f6", "#22c55e"]}
-              />
-
-            </div>
-          </div>
-
-          <div className="mt-12">
+            <div className="mb-12">
             {/* Judul Utama */}
             <h3 className="mb-4 font-bold text-base text-gray-800 dark:text-white/95 tracking-tight flex items-center gap-2">
               Batasan Kategori pada IRT (Item Response Theory)
             </h3>
+
+            <p className="text-sm text-gray-600 dark:text-gray-300 my-4">
+                    Tingkat kesulitan setiap soal tidak ditentukan secara manual di awal, melainkan dihitung otomatis berdasarkan pola jawaban seluruh peserta yang mengerjakan paket soal ini.
+                </p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* CARD 1: TINGKAT KESULITAN */}
@@ -195,16 +178,24 @@ export default function DashboardHasilIrtPengembang() {
                 
                 <div className="flex flex-col gap-2.5">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="font-medium text-green-500 dark:text-green-400 bg-green-50 dark:bg-green-950/30 px-2.5 py-0.5 rounded-full text-sm">Mudah</span>
-                    <span className="text-gray-600 dark:text-gray-300 font-mono">Nilai &lt; -1.0</span>
+                    <span className="font-medium text-green-500 dark:text-green-400 bg-green-50 dark:bg-green-950/30 px-2.5 py-0.5 rounded-full text-sm">Sangat Mudah</span>
+                    <span className="text-gray-600 dark:text-gray-300 font-mono">Nilai &lt; -2.0</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="font-medium text-amber-500 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 px-2.5 py-0.5 rounded-full text-sm">Sedang</span>
-                    <span className="text-gray-600 dark:text-gray-300 font-mono">-1.0 &le; Nilai &le; 1.0</span>
+                    <span className="font-medium text-blue-500 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/30 px-2.5 py-0.5 rounded-full text-sm">Mudah</span>
+                    <span className="text-gray-600 dark:text-gray-300 font-mono">-2.0 &le; Nilai &lt; -1.0</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="font-medium text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-950/30 px-2.5 py-0.5 rounded-full text-sm">Susah</span>
-                    <span className="text-gray-600 dark:text-gray-300 font-mono">Nilai &gt; 1.0</span>
+                    <span className="font-medium text-yellow-500 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-950/30 px-2.5 py-0.5 rounded-full text-sm">Sedang</span>
+                    <span className="text-gray-600 dark:text-gray-300 font-mono">-1.0 &le; Nilai &lt; 1.0</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="font-medium text-orange-500 dark:text-orange-400 bg-orange-50 dark:bg-orange-950/30 px-2.5 py-0.5 rounded-full text-sm">Susah</span>
+                    <span className="text-gray-600 dark:text-gray-300 font-mono">1.0 &le; Nilai &lt; 2.0</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="font-medium text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-950/30 px-2.5 py-0.5 rounded-full text-sm">Sangat Susah</span>
+                    <span className="text-gray-600 dark:text-gray-300 font-mono">Nilai &gt; 2.0</span>
                   </div>
                 </div>
               </div>
@@ -223,39 +214,79 @@ export default function DashboardHasilIrtPengembang() {
                 
                 <div className="flex flex-col gap-2.5">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="font-medium text-red-500 dark:text-red-400 bg-red-50 dark:bg-red-950/30 px-2.5 py-0.5 rounded-full text-sm">Sangat Buruk</span>
+                    <span className="font-medium text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-950/30 px-2.5 py-0.5 rounded-full text-sm">Tidak Ada</span>
                     <span className="text-gray-600 dark:text-gray-300 font-mono">Nilai &lt; 0.0</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="font-medium text-amber-500 dark:text-amber-400 bg-yellow-50 dark:bg-yellow-950/30 px-2.5 py-0.5 rounded-full text-sm">Buruk</span>
-                    <span className="text-gray-600 dark:text-gray-300 font-mono">0.0 &le; Nilai &lt; 0.35</span>
+                    <span className="font-medium text-rose-500 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/30 px-2.5 py-0.5 rounded-full text-sm">Sangat Rendah</span>
+                    <span className="text-gray-600 dark:text-gray-300 font-mono">0.0 &le; Nilai &le; 0.34</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="font-medium text-purple-500 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/30 px-2.5 py-0.5 rounded-full text-sm">Cukup</span>
-                    <span className="text-gray-600 dark:text-gray-300 font-mono">0.35 &le; Nilai &lt; 0.65</span>
+                    <span className="font-medium text-orange-500 dark:text-orange-400 bg-orange-50 dark:bg-orange-950/30 px-2.5 py-0.5 rounded-full text-sm">Rendah</span>
+                    <span className="text-gray-600 dark:text-gray-300 font-mono">0.35 &le; Nilai &le; 0.64</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="font-medium text-blue-500 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/30 px-2.5 py-0.5 rounded-full text-sm">Baik</span>
-                    <span className="text-gray-600 dark:text-gray-300 font-mono">0.65 &le; Nilai &lt; 1.65</span>
+                    <span className="font-medium text-amber-500 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 px-2.5 py-0.5 rounded-full text-sm">Sedang</span>
+                    <span className="text-gray-600 dark:text-gray-300 font-mono">0.65 &le; Nilai &le; 1.34</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="font-medium text-green-500 dark:text-green-400 bg-green-50 dark:bg-green-950/30 px-2.5 py-0.5 rounded-full text-sm">Sangat Baik</span>
-                    <span className="text-gray-600 dark:text-gray-300 font-mono">Nilai &ge; 1.65</span>
+                    <span className="font-medium text-sky-500 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/30 px-2.5 py-0.5 rounded-full text-sm">Tinggi</span>
+                    <span className="text-gray-600 dark:text-gray-300 font-mono">1.35 &le; Nilai &le; 1.69</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="font-medium text-emerald-500 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/30 px-2.5 py-0.5 rounded-full text-sm">Sangat Tinggi</span>
+                    <span className="text-gray-600 dark:text-gray-300 font-mono">Nilai &ge; 1.69</span>
                   </div>
                 </div>
               </div>
 
             </div>
           </div>
+          <div>
+            <h1 className="font-semibold mb-3 text-base">Analisis Karakteristik Soal (Item Analysis)</h1>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <KomposisiPieChart
+                title="Distribusi Tingkat Kesulitan"
+                labels={["Sangat Mudah", "Mudah", "Sedang", "Susah", "Sangat Susah"]}
+                series={[
+                  detailPaket.analisis_soal.kategori_kesulitan.sangat_mudah,
+                  detailPaket.analisis_soal.kategori_kesulitan.mudah,
+                  detailPaket.analisis_soal.kategori_kesulitan.sedang,
+                  detailPaket.analisis_soal.kategori_kesulitan.susah,
+                  detailPaket.analisis_soal.kategori_kesulitan.sangat_susah,
+                ]}
+                colors={["#4ADE80", "#60A5FA", "#FACC15", "#FB923C", "#F87171"]}
+              />
+              
+              <DayaPembedaChart
+                title="Distribusi Daya Pembeda"
+                labels={["Tidak Ada", "Sangat Rendah", "Rendah", "Sedang", "Tinggi", "Sangat Tinggi"]}
+                series={[
+                  detailPaket.analisis_soal.kategori_daya_pembeda.tidak_ada,
+                  detailPaket.analisis_soal.kategori_daya_pembeda.sangat_rendah,
+                  detailPaket.analisis_soal.kategori_daya_pembeda.rendah,
+                  detailPaket.analisis_soal.kategori_daya_pembeda.sedang,
+                  detailPaket.analisis_soal.kategori_daya_pembeda.tinggi,
+                  detailPaket.analisis_soal.kategori_daya_pembeda.sangat_tinggi,
+                ]}
+                colors={["#94A3B8", "#F87171", "#FB923C", "#FACC15", "#60A5FA", "#4ADE80"]}
+                modelIrt={detailPaket.analisis_soal?.detail?.[0]?.model_irt}
+              />
+
+            </div>
+          </div>
 
           <div className="mt-12">
             <p className="mb-4 font-semibold text-base">Detail Parameter Butir Soal</p>
+            <p className="text-sm text-gray-600 dark:text-gray-300 my-4">
+                    Tingkat kesulitan setiap soal tidak ditentukan secara manual di awal, melainkan dihitung otomatis berdasarkan pola jawaban seluruh peserta yang mengerjakan paket soal ini.
+                </p>
             <AnalisisSoal detailSoal={detailPaket.analisis_soal.detail} />
           </div>
         </div>
 
         {/* 🤖 BARU: Section Validasi & Audit Butir Soal oleh AI Gemini */}
-        <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] mt-4 dark:text-white/90">
+        {/* <section className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] mt-4 dark:text-white/90">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-3">
             <div>
               <h2 className="text-base font-bold text-gray-800 dark:text-white flex items-center gap-2">
@@ -300,7 +331,7 @@ export default function DashboardHasilIrtPengembang() {
               <ReactMarkdown>{rekomendasiAdmin}</ReactMarkdown>
             </div>
           )}
-        </section>
+        </section> */}
 
         {/* Peringkat Peserta */}
         <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] mt-4 dark:text-white/90">

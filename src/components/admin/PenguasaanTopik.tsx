@@ -11,8 +11,8 @@ interface TopikProps {
   jumlah_peserta: number;
   jumlah_lemah: number;
   persen_lemah: number;
-  jumlah_normal: number;
-  persen_normal: number;
+  jumlah_sedang: number;
+  persen_sedang: number;
   jumlah_kuat: number;
   persen_kuat: number;
 }
@@ -22,8 +22,8 @@ export const PenguasaanTopik: React.FC<TopikProps> = ({
   jumlah_peserta, 
   jumlah_lemah, 
   persen_lemah, 
-  jumlah_normal, 
-  persen_normal, 
+  jumlah_sedang, 
+  persen_sedang, 
   jumlah_kuat, 
   persen_kuat 
 }) => {
@@ -34,7 +34,7 @@ export const PenguasaanTopik: React.FC<TopikProps> = ({
   // Data Series menggunakan nilai persentase
   const series = [
     { name: "Lemah", data: [persen_lemah] },
-    { name: "Normal", data: [persen_normal] },
+    { name: "Sedang", data: [persen_sedang] },
     { name: "Kuat", data: [persen_kuat] },
   ];
 
@@ -107,8 +107,8 @@ export const PenguasaanTopik: React.FC<TopikProps> = ({
           <p className="text-red-500 dark:text-red-400 font-semibold">{jumlah_lemah} Peserta ({persen_lemah}%)</p>
         </div>
         <div className="">
-          <p className="text-gray-500 dark:text-gray-400">Normal</p>
-          <p className="text-yellow-500 dark:text-yellow-400 font-semibold">{jumlah_normal} Peserta ({persen_normal}%)</p>
+          <p className="text-gray-500 dark:text-gray-400">Sedang</p>
+          <p className="text-yellow-500 dark:text-yellow-400 font-semibold">{jumlah_sedang} Peserta ({persen_sedang}%)</p>
         </div>
         <div className="">
           <p className="text-gray-500 dark:text-gray-400">Kuat</p>

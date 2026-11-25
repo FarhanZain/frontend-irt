@@ -7,6 +7,7 @@ interface SoalDetail {
     level_kesulitan: string;
     nama_topik: string;
     pertanyaan: string;
+    pembahasan?: string | null;
     status_jawaban: string;
     jawaban_peserta: string | null;
     kunci_jawaban: string;
@@ -22,16 +23,24 @@ export const Level = ({ data }: LevelProps) => {
 
     return (
         <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
-            <div className="flex flex-col gap-4 md:flex-row md:gap-0 items-center justify-between mb-4">
+            <div className="flex flex-col gap-4 md:flex-row md:gap-0 items-center justify-between">
                 <h4 className="text-base text-gray-500 font-semibold dark:text-gray-400">
                     Tingkat Kesulitan Soal
                 </h4>
                 
                 <div className="flex gap-4 text-xs font-medium">
+                    <div className="flex items-center gap-1"><span className="w-3 h-3 bg-green-400 rounded-full"></span> Sangat Mudah</div>
                     <div className="flex items-center gap-1"><span className="w-3 h-3 bg-blue-400 rounded-full"></span> Mudah</div>
-                    <div className="flex items-center gap-1"><span className="w-3 h-3 bg-blue-700 rounded-full"></span> Sedang</div>
-                    <div className="flex items-center gap-1"><span className="w-3 h-3 bg-blue-950 rounded-full"></span> Susah</div>
+                    <div className="flex items-center gap-1"><span className="w-3 h-3 bg-yellow-400 rounded-full"></span> Sedang</div>
+                    <div className="flex items-center gap-1"><span className="w-3 h-3 bg-orange-400 rounded-full"></span> Susah</div>
+                    <div className="flex items-center gap-1"><span className="w-3 h-3 bg-red-400 rounded-full"></span> Sangat Susah</div>
                 </div>
+            </div>
+
+            <div>
+                <p className="text-sm text-gray-600 dark:text-gray-300 my-4">
+                    Tingkat kesulitan setiap soal tidak ditentukan secara manual di awal, melainkan dihitung otomatis berdasarkan pola jawaban seluruh peserta yang mengerjakan paket soal ini.
+                </p>
             </div>
 
             <div className="flex flex-wrap gap-x-10 gap-y-4">
@@ -41,7 +50,7 @@ export const Level = ({ data }: LevelProps) => {
                             key={soal.id_soal}
                             onClick={() => setSelectedSoal(soal)} // Set data soal saat di-klik untuk membuka modal
                             className={`group relative p-3 rounded-lg min-w-[42px] flex justify-center items-center shadow-sm transition-transform hover:scale-110 cursor-pointer
-                                ${soal.level_kesulitan === "Mudah" ? "bg-blue-400" : soal.level_kesulitan === "Sedang" ? "bg-blue-700" : "bg-blue-950"}`}
+                                ${soal.level_kesulitan === "Sangat Mudah" ? "bg-green-400" : soal.level_kesulitan === "Mudah" ? "bg-blue-400" : soal.level_kesulitan === "Sedang" ? "bg-yellow-400" : soal.level_kesulitan === "Susah" ? "bg-orange-400" : "bg-red-400"}`}
                         >
                             {/* Nomor Soal Otomatis berdasarkan Index */}
                             <p className="font-bold text-white text-sm">
@@ -76,7 +85,7 @@ export const Level = ({ data }: LevelProps) => {
             {/* MODAL DETAIL SOAL */}
             {selectedSoal && (
                 <div className="fixed inset-0 z-99999 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm transition-opacity">
-                    <div className="relative w-full max-w-xl bg-white dark:bg-gray-900 rounded-2xl shadow-xl overflow-hidden transform transition-all border border-gray-100 dark:border-gray-800">
+                    <div className="relative w-full max-w-4xl bg-white dark:bg-gray-900 rounded-2xl shadow-xl overflow-hidden transform transition-all border border-gray-100 dark:border-gray-800">
                         
                         {/* Header Modal */}
                         <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between bg-gray-50 dark:bg-gray-800/50">
@@ -121,8 +130,8 @@ export const Level = ({ data }: LevelProps) => {
                                 <div>
                                     <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">Tingkat Kesulitan</label>
                                     <span className={`inline-block px-4 py-1 mt-1 rounded-full font-medium 
-                                        ${selectedSoal.level_kesulitan === "Mudah" ? "bg-blue-400" : 
-                                          selectedSoal.level_kesulitan === "Sedang" ? "bg-blue-700" : "bg-blue-950"} text-white`}>
+                                        ${selectedSoal.level_kesulitan === "Sangat Mudah" ? "bg-green-400" : selectedSoal.level_kesulitan === "Mudah" ? "bg-blue-400" : 
+                                          selectedSoal.level_kesulitan === "Sedang" ? "bg-yellow-400" : selectedSoal.level_kesulitan === "Susah" ? "bg-orange-400" : "bg-red-400"} text-white`}>
                                         {selectedSoal.level_kesulitan}
                                     </span>
                                 </div>
@@ -154,6 +163,19 @@ export const Level = ({ data }: LevelProps) => {
                                         {/* {selectedSoal.kunci_jawaban} */}
                                         <MathText text={selectedSoal.kunci_jawaban} />
                                     </p>
+                                </div>
+
+                                {/* <--- [TAMBAHAN 2] Kotak Pembahasan Soal ---> */}
+                                <div>
+                                    <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">Pembahasan</label>
+                                    <div className="text-sm text-gray-800 dark:text-gray-200 bg-gray-50 dark:bg-gray-800/30 p-3 rounded-xl border border-gray-100 dark:border-gray-800/50 leading-relaxed">
+                                        {selectedSoal.pembahasan ? (
+                                            // Jika pembahasan tersedia, tampilkan pembahasan
+                                            <MathText text={selectedSoal.pembahasan} />
+                                        ) : (
+                                            <p className="text-sm text-gray-500 dark:text-gray-400">Pembahasan tidak tersedia.</p>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
 

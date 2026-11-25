@@ -64,13 +64,13 @@ export const PeringkatPesertaList = ({ dataPeserta }: PeringkatPesertaListProps)
               {/* Statistik Parameter IRT & Skor */}
               <div className="grid grid-cols-2 gap-4 text-center">
                 <div>
-                  <p className="text-xs text-gray-400 font-medium mb-0.5">Rata-Rata Theta (θ)</p>
+                  <p className="text-xs text-gray-500 mb-0.5">Estimasi Kemampuan (θ)</p>
                   <p className="font-bold text-gray-700 dark:text-gray-300 font-mono">
                     {peserta.nilai_theta}
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-400 font-medium mb-0.5">Skor Akhir</p>
+                  <p className="text-xs text-gray-500 mb-0.5">Skor Akhir (Skala)</p>
                   <p className="font-extrabold text-blue-600 dark:text-blue-400">
                     {peserta.total_skor}
                   </p>

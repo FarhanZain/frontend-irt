@@ -44,6 +44,12 @@ export const ChartDistribusi = ({ title, categories, data, color }: DistribusiCh
         xaxis: {
             categories: categories,
             labels: {
+                rotate: -15, // Memiringkan label sebesar -45 derajat saat ruang sempit
+                rotateAlways: true, // Otomatis miring hanya jika label kelebihan/bertabrakan (ubah ke true jika ingin selalu miring)
+                hideOverlappingLabels: false, // Memaksa semua label tetap tampil dan tidak dihilangkan
+                trim: false, // Mencegah teks terpotong menjadi elipsis (...)
+                offsetX: 12, // Menggeser titik tumpu ke kanan agar badan teks berada tepat di tengah bar
+                offsetY: 10,  // Memberi sedikit jarak vertikal dari garis sumbu-X
                 style: { colors: "#9ca3af", fontSize: "12px" },
             },
         },
@@ -59,7 +65,7 @@ export const ChartDistribusi = ({ title, categories, data, color }: DistribusiCh
     const series = [{ name: "Peserta", data: data }];
 
     return (
-        <div className="w-full bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-gray-800 rounded-2xl p-4">
+        <div className="w-full bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-gray-800 rounded-2xl px-4 pt-4">
             <h1 className="dark:text-white/90 mb-2 font-semibold">{title}</h1>
             <Chart options={options} series={series} type="bar" height={300} />
         </div>

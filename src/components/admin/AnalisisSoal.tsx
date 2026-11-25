@@ -99,8 +99,10 @@ export const AnalisisSoal = ({ detailSoal }: AnalisisSoalTableProps) => {
                     const val = info.getValue<string>();
                     return (
                         <span className={`text-sm px-2 py-0.5 rounded-full font-medium ${
-                            val === "Susah" ? "bg-red-50 text-red-600 dark:bg-red-950/30 dark:text-red-400" :
-                            val === "Sedang" ? "bg-amber-50 text-amber-600 dark:bg-amber-950/30 dark:text-amber-400" :
+                            val === "Sangat Susah" ? "bg-red-50 text-red-600 dark:bg-red-950/30 dark:text-red-400" :
+                            val === "Susah" ? "bg-orange-50 text-orange-600 dark:bg-orange-950/30 dark:text-orange-400" :
+                            val === "Sedang" ? "bg-yellow-50 text-yellow-600 dark:bg-yellow-950/30 dark:text-yellow-400" :
+                            val === "Mudah" ? "bg-blue-50 text-blue-600 dark:bg-blue-950/30 dark:text-blue-400" :
                             "bg-green-50 text-green-600 dark:bg-green-950/30 dark:text-green-400"
                         }`}>
                             {val}
@@ -121,11 +123,12 @@ export const AnalisisSoal = ({ detailSoal }: AnalisisSoalTableProps) => {
                     const val = info.getValue<string>();
                     return (
                         <span className={`text-sm px-2 py-0.5 rounded-full font-medium ${
-                            val === "Sangat Buruk" ? "bg-red-50 text-red-500 dark:bg-red-950/30 dark:text-red-400" :
-                            val === "Buruk" ? "bg-amber-50 text-amber-500 dark:bg-amber-950/30 dark:text-amber-400" :
-                            val === "Cukup" ? "bg-purple-50 text-purple-500 dark:bg-purple-950/30 dark:text-purple-400" :
-                            val === "Baik" ? "bg-blue-50 text-blue-500 dark:bg-blue-950/30 dark:text-blue-400" :
-                            "bg-green-50 text-green-500 dark:bg-green-950/30 dark:text-green-400"
+                            val === "Tidak Ada" ? "bg-slate-200 text-slate-500 dark:bg-slate-950/30 dark:text-slate-400" :
+                            val === "Sangat Rendah" ? "bg-rose-50 text-rose-500 dark:bg-rose-950/30 dark:text-rose-400" :
+                            val === "Rendah" ? "bg-orange-50 text-orange-500 dark:bg-orange-950/30 dark:text-orange-400" :
+                            val === "Sedang" ? "bg-amber-50 text-amber-500 dark:bg-amber-950/30 dark:text-amber-400" :
+                            val === "Tinggi" ? "bg-sky-50 text-sky-500 dark:bg-sky-950/30 dark:text-sky-400" :
+                            "bg-emerald-50 text-emerald-500 dark:bg-emerald-950/30 dark:text-emerald-400"
                         }`}>
                             {val}
                         </span>

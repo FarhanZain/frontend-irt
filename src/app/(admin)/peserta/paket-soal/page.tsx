@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { Tombol } from "@/components/tombol/tombol";
 
 interface PaketPeserta {
   id_paket: number;
@@ -70,9 +71,16 @@ export default function DaftarPaketSoalPeserta() {
 
   return (
     <div className="w-full p-2 max-w-6xl mx-auto space-y-4">
-      <div className="bg-white p-6 rounded-2xl border border-gray-200">
+      <div className="">
         <h1 className="text-xl font-bold text-black">Paket Soal</h1>
         <p className="text-sm text-gray-500 mt-1">Silakan pilih paket soal di bawah ini untuk melihat detail deskripsi dan pengerjaan.</p>
+      </div>
+      <div className="flex justify-between items-center bg-white p-6 rounded-2xl border border-gray-200">
+        <div>
+          <h1 className="text-xl font-bold text-black">Tren Perkembangan Hasil Ujian</h1>
+          <p className="text-sm text-gray-500 mt-1">Pantau progres dari setiap paket ujian yang telah dikerjakan.</p>
+        </div>
+        <Tombol path="/peserta/trend" text="Lihat →" />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
